@@ -1,15 +1,76 @@
 
+import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Phone, Mail, MapPin, Clock } from "lucide-react";
+import { sendEmail } from "@/utils/emailService";
+import { useToast } from "@/hooks/use-toast";
 
 const Contact = () => {
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const { toast } = useToast();
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [formData, setFormData] = useState({
+    name: "",
+    email: "",
+    subject: "",
+    message: ""
+  });
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    const { id, value } = e.target;
+    setFormData(prevState => ({
+      ...prevState,
+      [id]: value
+    }));
+  };
+
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    // In a real application, you would handle form submission here
-    console.log("Form submitted");
-    alert("Thanks for your message! We'll be in touch soon.");
+    setIsSubmitting(true);
+    
+    try {
+      // Replace with your actual EmailJS service ID and template ID
+      const result = await sendEmail(
+        "contact_form", // Template ID
+        {
+          name: formData.name,
+          email: formData.email,
+          subject: formData.subject,
+          message: formData.message
+        },
+        "service_id" // Service ID
+      );
+
+      if (result.success) {
+        toast({
+          title: "Message Sent",
+          description: "Thanks for your message! We'll be in touch soon."
+        });
+        
+        // Reset the form
+        setFormData({
+          name: "",
+          email: "",
+          subject: "",
+          message: ""
+        });
+      } else {
+        toast({
+          title: "Error",
+          description: result.message,
+          variant: "destructive"
+        });
+      }
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: "An unexpected error occurred. Please try again later.",
+        variant: "destructive"
+      });
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -41,6 +102,8 @@ const Contact = () => {
                     placeholder="John Doe"
                     className="w-full"
                     required
+                    value={formData.name}
+                    onChange={handleChange}
                   />
                 </div>
                 <div>
@@ -53,6 +116,8 @@ const Contact = () => {
                     placeholder="john@example.com"
                     className="w-full"
                     required
+                    value={formData.email}
+                    onChange={handleChange}
                   />
                 </div>
               </div>
@@ -65,6 +130,8 @@ const Contact = () => {
                   placeholder="How can I help you?"
                   className="w-full"
                   required
+                  value={formData.subject}
+                  onChange={handleChange}
                 />
               </div>
               <div>
@@ -76,10 +143,16 @@ const Contact = () => {
                   placeholder="Tell me more about your case..."
                   className="w-full min-h-[150px]"
                   required
+                  value={formData.message}
+                  onChange={handleChange}
                 />
               </div>
-              <Button type="submit" className="bg-law-navy hover:bg-law-gold text-white transition-colors w-full">
-                Send Message
+              <Button 
+                type="submit" 
+                className="bg-law-navy hover:bg-law-gold text-white transition-colors w-full"
+                disabled={isSubmitting}
+              >
+                {isSubmitting ? "Sending..." : "Send Message"}
               </Button>
             </form>
           </div>

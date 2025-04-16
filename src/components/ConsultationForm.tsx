@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -26,6 +25,7 @@ import {
 } from "@/components/ui/form";
 import { useToast } from "@/hooks/use-toast";
 import { CalendarIcon, CheckCircle } from "lucide-react";
+import { sendEmail } from "@/utils/emailService";
 
 const formSchema = z.object({
   name: z.string().min(2, { message: "Name is required" }),
@@ -64,28 +64,39 @@ const ConsultationForm = ({ isOpen, onClose }: ConsultationFormProps) => {
     setIsSubmitting(true);
     
     try {
-      // In a real app, you would submit to a database or API
-      console.log("Consultation request:", data);
-      
-      // Simulate API call
-      await new Promise(resolve => setTimeout(resolve, 1000));
-      
-      setIsSuccess(true);
-      
-      // Show success message
-      toast({
-        title: "Consultation Scheduled",
-        description: `Your consultation has been scheduled for ${format(data.date, "EEEE, MMMM do")}. We'll be in touch shortly to confirm the time.`,
-      });
-      
-      // Reset after a delay
-      setTimeout(() => {
-        form.reset();
-        setStep("date");
-        setIsSuccess(false);
-        onClose();
-      }, 3000);
-      
+      const result = await sendEmail(
+        "consultation_form",
+        {
+          name: data.name,
+          email: data.email,
+          phone: data.phone,
+          topic: data.topic,
+          date: format(data.date, "EEEE, MMMM do, yyyy"),
+        },
+        "service_id"
+      );
+
+      if (result.success) {
+        setIsSuccess(true);
+        
+        toast({
+          title: "Consultation Scheduled",
+          description: `Your consultation has been scheduled for ${format(data.date, "EEEE, MMMM do")}. We'll be in touch shortly to confirm the time.`,
+        });
+        
+        setTimeout(() => {
+          form.reset();
+          setStep("date");
+          setIsSuccess(false);
+          onClose();
+        }, 3000);
+      } else {
+        toast({
+          title: "Submission Failed",
+          description: "There was a problem scheduling your consultation. Please try again.",
+          variant: "destructive",
+        });
+      }
     } catch (error) {
       toast({
         title: "Submission Failed",

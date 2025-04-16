@@ -15,6 +15,7 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { useToast } from "@/hooks/use-toast";
+import { sendEmail } from "@/utils/emailService";
 
 const formSchema = z.object({
   name: z.string().min(2, { message: "Name is required" }),
@@ -43,17 +44,34 @@ const TestimonialForm = () => {
     setIsSubmitting(true);
     
     try {
-      // In a real app, you would submit to a database or API
-      console.log("Testimonial submitted:", data);
-      
-      // Show success message
-      toast({
-        title: "Testimonial Submitted",
-        description: "Thank you for sharing your experience. Your testimonial will be reviewed shortly.",
-      });
-      
-      // Reset the form
-      form.reset();
+      // Replace with your actual EmailJS service ID and template ID
+      const result = await sendEmail(
+        "testimonial_form", // Template ID
+        {
+          name: data.name,
+          role: data.role,
+          testimonial: data.testimonial,
+          email: data.email,
+        },
+        "service_id" // Service ID
+      );
+
+      if (result.success) {
+        // Show success message
+        toast({
+          title: "Testimonial Submitted",
+          description: "Thank you for sharing your experience. Your testimonial will be reviewed shortly.",
+        });
+        
+        // Reset the form
+        form.reset();
+      } else {
+        toast({
+          title: "Submission Failed",
+          description: "There was a problem submitting your testimonial. Please try again.",
+          variant: "destructive",
+        });
+      }
     } catch (error) {
       toast({
         title: "Submission Failed",
