@@ -3,6 +3,7 @@ import { useState } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { ChevronLeft, ChevronRight, Quote } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import TestimonialForm from "./TestimonialForm";
 
 const testimonials = [
   {
@@ -27,6 +28,7 @@ const testimonials = [
 
 const Testimonials = () => {
   const [currentIndex, setCurrentIndex] = useState(0);
+  const [showForm, setShowForm] = useState(false);
 
   const nextTestimonial = () => {
     setCurrentIndex((prevIndex) => (prevIndex + 1) % testimonials.length);
@@ -91,6 +93,22 @@ const Testimonials = () => {
               <ChevronRight className="h-5 w-5" />
             </Button>
           </div>
+          
+          <div className="mt-12 text-center opacity-0 animate-fade-in animate-delay-300">
+            <Button 
+              variant="outline"
+              className="border-white text-white hover:bg-white hover:text-law-navy"
+              onClick={() => setShowForm(!showForm)}
+            >
+              {showForm ? "Hide Form" : "Share Your Testimonial"}
+            </Button>
+          </div>
+          
+          {showForm && (
+            <div className="mt-8 opacity-0 animate-fade-in">
+              <TestimonialForm />
+            </div>
+          )}
         </div>
       </div>
     </section>

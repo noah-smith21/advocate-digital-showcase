@@ -1,8 +1,12 @@
 
+import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { ArrowRight } from "lucide-react";
+import ConsultationForm from "./ConsultationForm";
 
 const Hero = () => {
+  const [showConsultation, setShowConsultation] = useState(false);
+  
   return (
     <section className="relative bg-law-navy text-white min-h-screen flex items-center">
       <div 
@@ -18,7 +22,11 @@ const Hero = () => {
             Dedicated to protecting your rights and securing your future through experienced legal counsel and personalized service.
           </p>
           <div className="flex flex-col sm:flex-row space-y-4 sm:space-y-0 sm:space-x-4">
-            <Button size="lg" className="bg-law-gold hover:bg-law-gold/90 text-law-navy font-medium">
+            <Button 
+              size="lg" 
+              className="bg-law-gold hover:bg-law-gold/90 text-law-navy font-medium"
+              onClick={() => setShowConsultation(true)}
+            >
               Schedule Consultation
             </Button>
             <Button variant="outline" size="lg" className="border-white text-white hover:bg-white hover:text-law-navy">
@@ -34,6 +42,11 @@ const Hero = () => {
           </svg>
         </a>
       </div>
+      
+      <ConsultationForm 
+        isOpen={showConsultation} 
+        onClose={() => setShowConsultation(false)}
+      />
     </section>
   );
 };
