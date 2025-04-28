@@ -35,7 +35,7 @@ const Navbar = () => {
       <div className="container-custom">
         <div className="flex items-center justify-between">
           <a href="#" className="text-law-navy hover:text-law-gold transition-colors">
-            <h1 className="text-2xl font-serif font-bold">James Wilson <span className="hidden sm:inline">| Attorney at Law</span></h1>
+            <h1 className="text-2xl font-serif font-bold">Shikha Mishra <span className="hidden sm:inline">| Attorney at Law</span></h1>
           </a>
           
           {/* Desktop Menu */}

@@ -17,7 +17,7 @@ const Hero = () => {
     <section className="relative bg-law-navy text-white min-h-screen flex items-center">
       <div 
         className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1589391886645-d51941baf7fb?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80')] bg-cover bg-center"
-        style={{ opacity: '0.15' }}
+        style={{ opacity: '0.5' }}
       />
       <div className="container-custom relative z-10 py-24">
         <div className="max-w-3xl opacity-0 animate-fade-in">
@@ -34,9 +34,6 @@ const Hero = () => {
               onClick={() => setShowConsultation(true)}
             >
               Schedule Consultation
-            </Button>
-            <Button variant="outline" size="lg" className="border-white text-white hover:bg-white hover:text-law-navy">
-              Learn More <ArrowRight className="ml-2 h-5 w-5" />
             </Button>
           </div>
         </div>
