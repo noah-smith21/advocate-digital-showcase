@@ -9,8 +9,8 @@ const About = () => {
       <div className="container-custom">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
           <div className="order-2 lg:order-1 opacity-0 animate-fade-in animate-delay-100">
-            <h2 className="text-3xl md:text-4xl font-bold font-serif text-law-navy mb-6">
-              Shikha Mishra, <span className="text-law-gold">Attorney at Law</span>
+            <h2 className="text-3xl md:text-3xl font-bold font-serif text-law-navy mb-3">
+            Adv.Shikha Mishra, <span className="text-law-gold">Attorney at Law</span>
             </h2>
             <p className="text-law-charcoal mb-6">
                I have been dedicated to providing exceptional legal representation to clients . With a focus on Criminal Law,Matrimonial Law, Divorce,Family law & civil litigation, I bring a wealth of knowledge and a commitment to achieving the best possible outcomes for those I serve.
