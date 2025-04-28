@@ -1,37 +1,30 @@
 
 import { Card, CardContent } from "@/components/ui/card";
-import { Gavel, Building, FileText, Users, Scale, Home } from "lucide-react";
 
 const practices = [
   {
     title: "Corporate Law",
     description: "Comprehensive legal solutions for businesses of all sizes, including formation, compliance, contracts, and mergers & acquisitions.",
-    icon: Building,
   },
   {
     title: "Civil Litigation",
     description: "Zealous representation in complex disputes, with a strategic approach focused on achieving favorable outcomes efficiently.",
-    icon: Gavel,
   },
   {
-    title: "Estate Planning",
-    description: "Thoughtful planning to protect your assets and provide for your loved ones, including wills, trusts, and probate matters.",
-    icon: FileText,
+    title: "Criminal Defense",
+    description: "Involves legal strategies and arguments to protect a person accused of crime, ensuring they receive a fair punishment if found guilty.",
   },
   {
     title: "Family Law",
     description: "Compassionate guidance through divorce, child custody, support matters, and other family-related legal concerns.",
-    icon: Users,
   },
   {
     title: "Personal Injury",
     description: "Dedicated advocacy for injury victims seeking fair compensation after accidents caused by negligence.",
-    icon: Scale,
   },
   {
     title: "Real Estate Law",
     description: "Expert handling of residential and commercial transactions, landlord-tenant disputes, and property litigation.",
-    icon: Home,
   }
 ];
 
@@ -52,9 +45,6 @@ const PracticeAreas = () => {
             <div key={practice.title} className={`opacity-0 animate-fade-in animate-delay-${(index % 3) * 100 + 200}`}>
               <Card className="h-full hover:shadow-lg transition-shadow border-t-4 border-t-law-gold">
                 <CardContent className="pt-6">
-                  <div className="bg-law-navy/10 p-3 rounded-full w-fit mb-6">
-                    <practice.icon className="h-6 w-6 text-law-navy" />
-                  </div>
                   <h3 className="text-xl font-serif font-bold text-law-navy mb-3">{practice.title}</h3>
                   <p className="text-law-charcoal">{practice.description}</p>
                 </CardContent>
