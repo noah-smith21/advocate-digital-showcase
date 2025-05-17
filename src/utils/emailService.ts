@@ -1,10 +1,9 @@
-
-import emailjs from 'emailjs-com';
+import emailjs from '@emailjs/browser';
 
 // Initialize EmailJS with your user ID
-// Replace 'YOUR_USER_ID' with your actual EmailJS user ID when setting up
 export const initEmailJS = () => {
-  emailjs.init("YOUR_USER_ID");
+  // This is no longer required with the newer @emailjs/browser package
+  // The initialization is handled during the sendForm call
 };
 
 interface EmailParams {
@@ -13,10 +12,33 @@ interface EmailParams {
   [key: string]: any; // Allow for additional fields
 }
 
-// Generic function to send emails
+// Function to send emails similar to how it's done in Contact.tsx
+export const sendEmailForm = async (
+  serviceId: string,
+  templateId: string,
+  form: HTMLFormElement,
+  publicKey: string
+) => {
+  try {
+    const result = await emailjs.sendForm(
+      serviceId,
+      templateId,
+      form,
+      publicKey
+    );
+    
+    console.log('Email successfully sent!', result);
+    return { success: true, message: 'Email sent successfully!' };
+  } catch (error) {
+    console.error('Failed to send email:', error);
+    return { success: false, message: 'Failed to send email. Please try again later.' };
+  }
+};
+
+// Keep the original sendEmail function for backward compatibility
 export const sendEmail = async (
   templateId: string, 
-  params: EmailParams, 
+  params: Record<string, any>, 
   serviceId: string
 ): Promise<{ success: boolean; message: string }> => {
   try {

@@ -1,17 +1,10 @@
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { Button } from "@/components/ui/button";
-import { ArrowRight } from "lucide-react";
 import ConsultationForm from "./ConsultationForm";
-import { initEmailJS } from "@/utils/emailService";
 
 const Hero = () => {
   const [showConsultation, setShowConsultation] = useState(false);
-  
-  // Initialize EmailJS when component mounts
-  useEffect(() => {
-    initEmailJS();
-  }, []);
   
   return (
     <section className="relative bg-law-navy text-dark min-h-screen flex items-center">

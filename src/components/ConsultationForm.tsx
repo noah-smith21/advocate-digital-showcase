@@ -1,4 +1,5 @@
-import { useState } from "react";
+
+import { useState, useRef } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
@@ -25,7 +26,7 @@ import {
 } from "@/components/ui/form";
 import { useToast } from "@/hooks/use-toast";
 import { CalendarIcon, CheckCircle } from "lucide-react";
-import { sendEmail } from "@/utils/emailService";
+import { sendEmailForm } from "@/utils/emailService";
 
 const formSchema = z.object({
   name: z.string().min(2, { message: "Name is required" }),
@@ -47,6 +48,7 @@ const ConsultationForm = ({ isOpen, onClose }: ConsultationFormProps) => {
   const [step, setStep] = useState<"date" | "details">("date");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
+  const formRef = useRef<HTMLFormElement>(null);
   
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
@@ -61,19 +63,27 @@ const ConsultationForm = ({ isOpen, onClose }: ConsultationFormProps) => {
   const selectedDate = form.watch("date");
 
   const onSubmit = async (data: FormValues) => {
+    if (!formRef.current) return;
     setIsSubmitting(true);
     
+    // Add the date to the form
+    const hiddenField = document.createElement("input");
+    hiddenField.type = "hidden";
+    hiddenField.name = "date";
+    hiddenField.value = format(data.date, "EEEE, MMMM do, yyyy");
+    formRef.current.appendChild(hiddenField);
+    
     try {
-      const result = await sendEmail(
-        "consultation_form",
-        {
-          name: data.name,
-          email: data.email,
-          phone: data.phone,
-          topic: data.topic,
-          date: format(data.date, "EEEE, MMMM do, yyyy"),
-        },
-        "service_id"
+      // Replace these with your actual EmailJS credentials
+      const serviceId = "service_id"; // Replace with your service ID
+      const templateId = "template_id"; // Replace with your template ID
+      const publicKey = "public_key"; // Replace with your public key
+      
+      const result = await sendEmailForm(
+        serviceId,
+        templateId,
+        formRef.current,
+        publicKey
       );
 
       if (result.success) {
@@ -105,6 +115,9 @@ const ConsultationForm = ({ isOpen, onClose }: ConsultationFormProps) => {
       });
     } finally {
       setIsSubmitting(false);
+      if (formRef.current && hiddenField) {
+        formRef.current.removeChild(hiddenField);
+      }
     }
   };
 
@@ -159,7 +172,7 @@ const ConsultationForm = ({ isOpen, onClose }: ConsultationFormProps) => {
               </div>
             ) : (
               <Form {...form}>
-                <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+                <form ref={formRef} onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
                   <div className="bg-gray-100 p-3 rounded-md flex items-center gap-2 mb-4">
                     <CalendarIcon className="h-5 w-5 text-law-navy" />
                     <span>
@@ -178,7 +191,7 @@ const ConsultationForm = ({ isOpen, onClose }: ConsultationFormProps) => {
                       <FormItem>
                         <FormLabel>Full Name</FormLabel>
                         <FormControl>
-                          <Input placeholder="John Smith" {...field} />
+                          <Input placeholder="John Smith" {...field} name="name" />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
@@ -193,7 +206,7 @@ const ConsultationForm = ({ isOpen, onClose }: ConsultationFormProps) => {
                         <FormItem>
                           <FormLabel>Email</FormLabel>
                           <FormControl>
-                            <Input type="email" placeholder="your@email.com" {...field} />
+                            <Input type="email" placeholder="your@email.com" {...field} name="email" />
                           </FormControl>
                           <FormMessage />
                         </FormItem>
@@ -207,7 +220,7 @@ const ConsultationForm = ({ isOpen, onClose }: ConsultationFormProps) => {
                         <FormItem>
                           <FormLabel>Phone Number</FormLabel>
                           <FormControl>
-                            <Input placeholder="(555) 555-5555" {...field} />
+                            <Input placeholder="(555) 555-5555" {...field} name="phone" />
                           </FormControl>
                           <FormMessage />
                         </FormItem>
@@ -226,6 +239,7 @@ const ConsultationForm = ({ isOpen, onClose }: ConsultationFormProps) => {
                             placeholder="Briefly describe your legal matter..."
                             className="min-h-[100px]"
                             {...field}
+                            name="topic"
                           />
                         </FormControl>
                         <FormMessage />

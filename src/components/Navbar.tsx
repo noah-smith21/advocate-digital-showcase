@@ -2,10 +2,12 @@
 import { useState, useEffect } from 'react';
 import { Button } from "@/components/ui/button";
 import { Menu } from "lucide-react";
+import ConsultationForm from "./ConsultationForm";
 
 const Navbar = () => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [showConsultation, setShowConsultation] = useState(false);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -44,7 +46,12 @@ const Navbar = () => {
             <a href="#practice-areas" className="text-law-charcoal hover:text-law-gold transition-colors font-medium">Practice Areas</a>
             <a href="#testimonials" className="text-law-charcoal hover:text-law-gold transition-colors font-medium">Testimonials</a>
             <a href="#contact" className="text-law-charcoal hover:text-law-gold transition-colors font-medium">Contact</a>
-            <Button className="bg-law-navy text-white hover:bg-law-gold transition-colors">Free Consultation</Button>
+            <Button 
+              className="bg-law-navy text-white hover:bg-law-gold transition-colors"
+              onClick={() => setShowConsultation(true)}
+            >
+              Free Consultation
+            </Button>
           </nav>
           
           {/* Mobile Menu Button */}
@@ -91,13 +98,22 @@ const Navbar = () => {
             </a>
             <Button 
               className="bg-law-navy text-white hover:bg-law-gold transition-colors w-full"
-              onClick={() => setMobileMenuOpen(false)}
+              onClick={() => {
+                setMobileMenuOpen(false);
+                setShowConsultation(true);
+              }}
             >
               Free Consultation
             </Button>
           </nav>
         </div>
       </div>
+
+      {/* Consultation Form */}
+      <ConsultationForm 
+        isOpen={showConsultation} 
+        onClose={() => setShowConsultation(false)}
+      />
     </header>
   );
 };
