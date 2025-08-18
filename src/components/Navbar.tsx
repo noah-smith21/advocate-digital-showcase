@@ -97,7 +97,7 @@ const Navbar = () => {
               Contact
             </a>
             <Button 
-              className="bg-law-navy text-white hover:bg-law-gold transition-colors w-full"
+              className=" bg-law-gold  text-white  transition-colors w-full"
               onClick={() => {
                 setMobileMenuOpen(false);
                 setShowConsultation(true);

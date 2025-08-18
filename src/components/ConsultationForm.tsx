@@ -1,4 +1,3 @@
-
 import { useState, useRef } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -28,12 +27,16 @@ import { useToast } from "@/hooks/use-toast";
 import { CalendarIcon, CheckCircle } from "lucide-react";
 import { sendEmailForm } from "@/utils/emailService";
 
+/* -----------------------------
+   Schema
+----------------------------- */
 const formSchema = z.object({
   name: z.string().min(2, { message: "Name is required" }),
   email: z.string().email({ message: "Valid email is required" }),
   phone: z.string().min(10, { message: "Valid phone number is required" }),
   topic: z.string().min(5, { message: "Please briefly describe your legal matter" }),
   date: z.date({ required_error: "Please select a date" }),
+  time: z.string({ required_error: "Please select a time" }),
 });
 
 type FormValues = z.infer<typeof formSchema>;
@@ -43,13 +46,16 @@ interface ConsultationFormProps {
   onClose: () => void;
 }
 
+/* -----------------------------
+   Component
+----------------------------- */
 const ConsultationForm = ({ isOpen, onClose }: ConsultationFormProps) => {
   const { toast } = useToast();
   const [step, setStep] = useState<"date" | "details">("date");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
   const formRef = useRef<HTMLFormElement>(null);
-  
+
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -57,43 +63,50 @@ const ConsultationForm = ({ isOpen, onClose }: ConsultationFormProps) => {
       email: "",
       phone: "",
       topic: "",
+      time: "",
     },
   });
 
   const selectedDate = form.watch("date");
 
+  /* -----------------------------
+     Handlers
+  ----------------------------- */
   const onSubmit = async (data: FormValues) => {
     if (!formRef.current) return;
     setIsSubmitting(true);
-    
-    // Add the date to the form
-    const hiddenField = document.createElement("input");
-    hiddenField.type = "hidden";
-    hiddenField.name = "date";
-    hiddenField.value = format(data.date, "EEEE, MMMM do, yyyy");
-    formRef.current.appendChild(hiddenField);
-    
+
+    // Hidden fields for email service
+    const dateField = document.createElement("input");
+    dateField.type = "hidden";
+    dateField.name = "date";
+    dateField.value = format(data.date, "EEEE, MMMM do, yyyy");
+    formRef.current.appendChild(dateField);
+
+    const timeField = document.createElement("input");
+    timeField.type = "hidden";
+    timeField.name = "time";
+    timeField.value = data.time;
+    formRef.current.appendChild(timeField);
+
     try {
-      // Replace these with your actual EmailJS credentials
-      const serviceId = "service_id"; // Replace with your service ID
-      const templateId = "template_id"; // Replace with your template ID
-      const publicKey = "public_key"; // Replace with your public key
-      
-      const result = await sendEmailForm(
-        serviceId,
-        templateId,
-        formRef.current,
-        publicKey
-      );
+      const serviceId = import.meta.env.VITE_EMAIL_SERVICE_ID;
+      const templateId = import.meta.env.VITE_EMAIL_TEMPLATE_ID;
+      const publicKey = import.meta.env.VITE_EMAIL_PUBLIC_KEY;
+
+      const result = await sendEmailForm(serviceId, templateId, formRef.current, publicKey);
 
       if (result.success) {
         setIsSuccess(true);
-        
+
         toast({
           title: "Consultation Scheduled",
-          description: `Your consultation has been scheduled for ${format(data.date, "EEEE, MMMM do")}. We'll be in touch shortly to confirm the time.`,
+          description: `Your consultation has been scheduled for ${format(
+            data.date,
+            "EEEE, MMMM do"
+          )}. We'll be in touch shortly to confirm the time.`,
         });
-        
+
         setTimeout(() => {
           form.reset();
           setStep("date");
@@ -115,8 +128,10 @@ const ConsultationForm = ({ isOpen, onClose }: ConsultationFormProps) => {
       });
     } finally {
       setIsSubmitting(false);
-      if (formRef.current && hiddenField) {
-        formRef.current.removeChild(hiddenField);
+
+      if (formRef.current) {
+        if (dateField) formRef.current.removeChild(dateField);
+        if (timeField) formRef.current.removeChild(timeField);
       }
     }
   };
@@ -128,29 +143,36 @@ const ConsultationForm = ({ isOpen, onClose }: ConsultationFormProps) => {
     }
   };
 
-  const handleBack = () => {
-    setStep("date");
-  };
+  const handleBack = () => setStep("date");
 
+  /* -----------------------------
+     Render
+  ----------------------------- */
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="sm:max-w-md md:max-w-lg">
         {isSuccess ? (
           <div className="flex flex-col items-center justify-center py-6">
             <CheckCircle className="w-16 h-16 text-green-500 mb-4" />
-            <DialogTitle className="text-center text-2xl">Consultation Scheduled!</DialogTitle>
+            <DialogTitle className="text-center text-2xl">
+              Consultation Scheduled!
+            </DialogTitle>
             <DialogDescription className="text-center mt-2">
-              Your consultation has been scheduled for {selectedDate && format(selectedDate, "EEEE, MMMM do")}. We'll be in touch shortly to confirm the time.
+              Your consultation has been scheduled for{" "}
+              {selectedDate && format(selectedDate, "EEEE, MMMM do")}. We'll be in
+              touch shortly to confirm the time.
             </DialogDescription>
           </div>
         ) : (
           <>
             <DialogHeader>
               <DialogTitle className="text-2xl font-serif text-law-navy">
-                {step === "date" ? "Select Consultation Date" : "Complete Your Booking"}
+                {step === "date"
+                  ? "Select Consultation Date"
+                  : "Complete Your Booking"}
               </DialogTitle>
               <DialogDescription>
-                {step === "date" 
+                {step === "date"
                   ? "Choose a preferred date for your consultation."
                   : "Please provide your details to complete the consultation booking."}
               </DialogDescription>
@@ -162,7 +184,9 @@ const ConsultationForm = ({ isOpen, onClose }: ConsultationFormProps) => {
                   mode="single"
                   selected={selectedDate}
                   onSelect={handleDateSelect}
-                  disabled={(date) => date < new Date() || date.getDay() === 0 || date.getDay() === 6}
+                  disabled={(date) =>
+                    date < new Date() || date.getDay() === 0 || date.getDay() === 6
+                  }
                   className="rounded-md border pointer-events-auto"
                   initialFocus
                 />
@@ -172,18 +196,49 @@ const ConsultationForm = ({ isOpen, onClose }: ConsultationFormProps) => {
               </div>
             ) : (
               <Form {...form}>
-                <form ref={formRef} onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+                <form
+                  ref={formRef}
+                  onSubmit={form.handleSubmit(onSubmit)}
+                  className="space-y-4"
+                >
+                  {/* Selected Date Summary */}
                   <div className="bg-gray-100 p-3 rounded-md flex items-center gap-2 mb-4">
                     <CalendarIcon className="h-5 w-5 text-law-navy" />
                     <span>
-                      {selectedDate ? (
-                        format(selectedDate, "EEEE, MMMM do, yyyy")
-                      ) : (
-                        "No date selected"
-                      )}
+                      {selectedDate
+                        ? format(selectedDate, "EEEE, MMMM do, yyyy")
+                        : "No date selected"}
                     </span>
                   </div>
-                  
+
+                  {/* Time */}
+                  <FormField
+                    control={form.control}
+                    name="time"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Preferred Time</FormLabel>
+                        <FormControl>
+                          <select
+                            {...field}
+                            name="time"
+                            className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm"
+                          >
+                            <option value="">Select a time</option>
+                            <option value="09:00">9:00 AM</option>
+                            <option value="10:00">10:00 AM</option>
+                            <option value="11:00">11:00 AM</option>
+                            <option value="14:00">2:00 PM</option>
+                            <option value="15:00">3:00 PM</option>
+                            <option value="16:00">4:00 PM</option>
+                          </select>
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+
+                  {/* Name */}
                   <FormField
                     control={form.control}
                     name="name"
@@ -197,7 +252,8 @@ const ConsultationForm = ({ isOpen, onClose }: ConsultationFormProps) => {
                       </FormItem>
                     )}
                   />
-                  
+
+                  {/* Email + Phone */}
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <FormField
                       control={form.control}
@@ -206,13 +262,18 @@ const ConsultationForm = ({ isOpen, onClose }: ConsultationFormProps) => {
                         <FormItem>
                           <FormLabel>Email</FormLabel>
                           <FormControl>
-                            <Input type="email" placeholder="your@email.com" {...field} name="email" />
+                            <Input
+                              type="email"
+                              placeholder="your@email.com"
+                              {...field}
+                              name="email"
+                            />
                           </FormControl>
                           <FormMessage />
                         </FormItem>
                       )}
                     />
-                    
+
                     <FormField
                       control={form.control}
                       name="phone"
@@ -220,14 +281,19 @@ const ConsultationForm = ({ isOpen, onClose }: ConsultationFormProps) => {
                         <FormItem>
                           <FormLabel>Phone Number</FormLabel>
                           <FormControl>
-                            <Input placeholder="(555) 555-5555" {...field} name="phone" />
+                            <Input
+                              placeholder="(555) 555-5555"
+                              {...field}
+                              name="phone"
+                            />
                           </FormControl>
                           <FormMessage />
                         </FormItem>
                       )}
                     />
                   </div>
-                  
+
+                  {/* Topic */}
                   <FormField
                     control={form.control}
                     name="topic"
@@ -235,24 +301,25 @@ const ConsultationForm = ({ isOpen, onClose }: ConsultationFormProps) => {
                       <FormItem>
                         <FormLabel>What would you like to discuss?</FormLabel>
                         <FormControl>
-                          <Textarea 
+                          <Textarea
                             placeholder="Briefly describe your legal matter..."
                             className="min-h-[100px]"
                             {...field}
-                            name="topic"
+                            name="message"
                           />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
                     )}
                   />
-                  
+
+                  {/* Footer Buttons */}
                   <DialogFooter className="flex flex-col-reverse sm:flex-row sm:justify-between gap-2">
                     <Button type="button" variant="outline" onClick={handleBack}>
                       Back to Calendar
                     </Button>
-                    <Button 
-                      type="submit" 
+                    <Button
+                      type="submit"
                       className="bg-law-gold hover:bg-law-gold/90 text-law-navy"
                       disabled={isSubmitting}
                     >
