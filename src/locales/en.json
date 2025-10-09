@@ -1,0 +1,97 @@
+﻿{
+  "siteTitle": "Global Information Portal",
+  "welcome": "Welcome to our official website.",
+  "hero": {
+    "heading": "Excellence & Integrity in Legal Representation",
+    "imageAlt": "Legal office background"
+  },
+  "home": "Home",
+  "aboutLabel": "About Us",
+  "contact": "Contact Us",
+  "services": "Our Services",
+  "freeConsultation": "Free Consultation",
+  "heroSubtitle": "Dedicated to protecting your rights and securing your future through experienced legal counsel and personalized service.",
+  "scheduleConsultation": "Schedule Consultation",
+  "practiceIntro": "With extensive experience across multiple legal disciplines, I provide comprehensive representation tailored to your specific needs and circumstances.",
+  "practice": {
+    "corporate": { "title": "Corporate Law", "description": "Comprehensive legal solutions for businesses of all sizes." },
+    "civil": { "title": "Civil Litigation", "description": "Zealous representation in complex disputes." },
+    "criminal": { "title": "Criminal Defense", "description": "Legal defense for criminal matters." }
+  },
+  "contactHeading": "Get In Touch",
+  "sendMessage": "Send Me a Message",
+  "fullName": "Full Name",
+  "namePlaceholder": "John Doe",
+  "emailAddress": "Email Address",
+  "emailPlaceholder": "john@example.com",
+  "subject": "Subject",
+  "subjectPlaceholder": "How can I help you?",
+  "message": "Message",
+  "messagePlaceholder": "Tell me more about your case...",
+  "sendMessageBtn": "Send Message",
+  "sending": "Sending...",
+  "messageSent": "Message Sent",
+  "messageSentDesc": "Thanks for your message! We'll be in touch soon.",
+  "contactInfo": {
+    "heading": "Contact Information",
+    "email": "Email",
+    "officeAddress": "Office Address",
+    "businessHours": "Business Hours"
+  }
+
+  ,
+  "footer": {
+    "name": "Adv.Shikha Mishra",
+    "description": "Providing exceptional legal services with integrity, dedication, and personalized attention to each client's unique needs.",
+    "quickLinks": {
+      "about": "About",
+      "practiceAreas": "Practice Areas",
+      "testimonials": "Testimonials",
+      "contact": "Contact",
+      "privacy": "Privacy Policy",
+      "terms": "Terms of Service"
+    },
+    "copyright": "All rights reserved."
+  },
+  "consultationForm": {
+    "consultationScheduled": "Consultation Scheduled",
+    "scheduledDesc": "Your consultation has been scheduled for {{date}}. We'll be in touch shortly to confirm the time.",
+    "selectDateTitle": "Select Consultation Date",
+    "bookingTitle": "Complete Your Booking",
+    "chooseDateDesc": "Choose a preferred date for your consultation.",
+    "completeBookingDesc": "Please provide your details to complete the consultation booking.",
+    "availableWeekdays": "Available on weekdays only.",
+    "noDateSelected": "No date selected",
+    "fullName": "Full Name",
+    "email": "Email",
+    "phone": "Phone Number",
+    "topicLabel": "What would you like to discuss?",
+    "topicPlaceholder": "Briefly describe your legal matter...",
+    "backToCalendar": "Back to Calendar",
+    "scheduleBtn": "Schedule Consultation",
+    "scheduling": "Scheduling...",
+    "successTitle": "Consultation Scheduled!",
+    "phonePlaceholder": "(555) 555-5555",
+    "submissionFailed": "Submission Failed",
+    "submissionFailedDesc": "There was a problem scheduling your consultation. Please try again."
+  },
+  "error": "Error",
+  "failedToSend": "Failed to send the message. Please try again.",
+  "unexpectedError": "An unexpected error occurred. Please try again later.",
+  "about": {
+    "heading": "Adv.Shikha Mishra, Attorney at Law",
+    "headingName": "Adv.Shikha Mishra",
+    "headingTitle": "Attorney at Law",
+    "bio1": "I have been dedicated to providing exceptional legal representation to clients. With a focus on Criminal Law, Matrimonial Law, Divorce, Family law & civil litigation, I bring a wealth of knowledge and a commitment to achieving the best possible outcomes for those I serve.",
+    "bio2": "After graduating with from SDSM Law School, I honed my skills at one of Sawale most prestigious law firms before establishing my own practice. My approach combines thorough legal analysis with a personalized touch, ensuring that each client receives tailored solutions to their unique legal challenges.",
+    "university": "Mumbai University",
+    "resumeBtn": "Download Resume",
+    "imageAlt": "Shikha Mishra Attorney"
+  },
+    "title": "Attorney at Law",
+    "bio1": "I have been dedicated to providing exceptional legal representation to clients. With a focus on Criminal Law, Matrimonial Law, Divorce, Family law & civil litigation, I bring a wealth of knowledge and a commitment to achieving the best possible outcomes for those I serve.",
+    "bio2": "After graduating with from SDSM Law School, I honed my skills at one of Sawale most prestigious law firms before establishing my own practice. My approach combines thorough legal analysis with a personalized touch, ensuring that each client receives tailored solutions to their unique legal challenges.",
+    "university": "Mumbai University",
+    "imageAlt": "Shikha Mishra Attorney"
+  }
+

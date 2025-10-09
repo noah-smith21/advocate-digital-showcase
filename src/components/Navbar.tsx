@@ -1,5 +1,7 @@
 
 import { useState, useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
+import i18n from '../i18n';
 import { Button } from "@/components/ui/button";
 import { Menu } from "lucide-react";
 import ConsultationForm from "./ConsultationForm";
@@ -26,6 +28,17 @@ const Navbar = () => {
     setMobileMenuOpen(!mobileMenuOpen);
   };
 
+  const { t } = useTranslation();
+
+  const handleLangChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const lng = e.target.value;
+  i18n.changeLanguage(lng);
+    // persist selection for i18next (it should already cache via detector)
+    try {
+      localStorage.setItem('i18nextLng', lng);
+    } catch {}
+  };
+
   return (
     <header 
       className={`fixed w-full z-50 transition-all duration-300 ${
@@ -50,8 +63,21 @@ const Navbar = () => {
               className="bg-law-navy text-white hover:bg-law-gold transition-colors"
               onClick={() => setShowConsultation(true)}
             >
-              Free Consultation
+              {t('freeConsultation') || 'Free Consultation'}
             </Button>
+            {/* Language selector */}
+            <select
+              aria-label="Select language"
+              value={i18n.language || 'en'}
+              onChange={handleLangChange}
+              className="ml-2 border rounded px-2 py-1 text-sm"
+            >
+              <option value="en">English</option>
+              <option value="hi">हिन्दी</option>
+              <option value="mr">मराठी</option>
+              <option value="te">తెలుగు</option>
+              <option value="ta">தமிழ்</option>
+            </select>
           </nav>
           
           {/* Mobile Menu Button */}
@@ -103,8 +129,22 @@ const Navbar = () => {
                 setShowConsultation(true);
               }}
             >
-              Free Consultation
+              {t('freeConsultation') || 'Free Consultation'}
             </Button>
+            <div>
+              <select
+                aria-label="Select language"
+                value={i18n.language || 'en'}
+                onChange={(e) => { handleLangChange(e); setMobileMenuOpen(false); }}
+                className="w-full border rounded px-2 py-1 text-sm mt-2"
+              >
+                <option value="en">English</option>
+                <option value="hi">हिन्दी</option>
+                <option value="mr">मराठी</option>
+                <option value="te">తెలుగు</option>
+                <option value="ta">தமிழ்</option>
+              </select>
+            </div>
           </nav>
         </div>
       </div>

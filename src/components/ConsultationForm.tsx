@@ -26,6 +26,7 @@ import {
 import { useToast } from "@/hooks/use-toast";
 import { CalendarIcon, CheckCircle } from "lucide-react";
 import { sendEmailForm } from "@/utils/emailService";
+import { useTranslation } from "react-i18next";
 
 /* -----------------------------
    Schema
@@ -52,6 +53,7 @@ interface ConsultationFormProps {
 const ConsultationForm = ({ isOpen, onClose }: ConsultationFormProps) => {
   const { toast } = useToast();
   const [step, setStep] = useState<"date" | "details">("date");
+  const { t } = useTranslation();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
   const formRef = useRef<HTMLFormElement>(null);
@@ -101,10 +103,7 @@ const ConsultationForm = ({ isOpen, onClose }: ConsultationFormProps) => {
 
         toast({
           title: "Consultation Scheduled",
-          description: `Your consultation has been scheduled for ${format(
-            data.date,
-            "EEEE, MMMM do"
-          )}. We'll be in touch shortly to confirm the time.`,
+          description: `Your consultation has been scheduled for ${format(data.date, "EEEE, MMMM do")}. We'll be in touch shortly to confirm the time.`,
         });
 
         setTimeout(() => {
@@ -154,25 +153,19 @@ const ConsultationForm = ({ isOpen, onClose }: ConsultationFormProps) => {
         {isSuccess ? (
           <div className="flex flex-col items-center justify-center py-6">
             <CheckCircle className="w-16 h-16 text-green-500 mb-4" />
-            <DialogTitle className="text-center text-2xl">
-              Consultation Scheduled!
-            </DialogTitle>
+            <DialogTitle className="text-center text-2xl">Consultation Scheduled!</DialogTitle>
             <DialogDescription className="text-center mt-2">
-              Your consultation has been scheduled for{" "}
-              {selectedDate && format(selectedDate, "EEEE, MMMM do")}. We'll be in
-              touch shortly to confirm the time.
+              Your consultation has been scheduled for {selectedDate && format(selectedDate, "EEEE, MMMM do")}. We'll be in touch shortly to confirm the time.
             </DialogDescription>
           </div>
         ) : (
           <>
             <DialogHeader>
               <DialogTitle className="text-2xl font-serif text-law-navy">
-                {step === "date"
-                  ? "Select Consultation Date"
-                  : "Complete Your Booking"}
+                {step === "date" ? "Select Consultation Date" : "Complete Your Booking"}
               </DialogTitle>
               <DialogDescription>
-                {step === "date"
+                {step === "date" 
                   ? "Choose a preferred date for your consultation."
                   : "Please provide your details to complete the consultation booking."}
               </DialogDescription>
@@ -191,7 +184,7 @@ const ConsultationForm = ({ isOpen, onClose }: ConsultationFormProps) => {
                   initialFocus
                 />
                 <p className="text-sm text-muted-foreground mt-2">
-                  Available on weekdays only.
+                  {t("consultationForm.availableWeekdays")}
                 </p>
               </div>
             ) : (
@@ -244,9 +237,9 @@ const ConsultationForm = ({ isOpen, onClose }: ConsultationFormProps) => {
                     name="name"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>Full Name</FormLabel>
+                        <FormLabel>{t("consultationForm.fullName")}</FormLabel>
                         <FormControl>
-                          <Input placeholder="John Smith" {...field} name="name" />
+                          <Input placeholder={t("namePlaceholder")} {...field} name="name" />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
@@ -260,14 +253,9 @@ const ConsultationForm = ({ isOpen, onClose }: ConsultationFormProps) => {
                       name="email"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel>Email</FormLabel>
+                          <FormLabel>{t("consultationForm.email")}</FormLabel>
                           <FormControl>
-                            <Input
-                              type="email"
-                              placeholder="your@email.com"
-                              {...field}
-                              name="email"
-                            />
+                            <Input type="email" placeholder="your@email.com" {...field} name="email" />
                           </FormControl>
                           <FormMessage />
                         </FormItem>
@@ -279,13 +267,9 @@ const ConsultationForm = ({ isOpen, onClose }: ConsultationFormProps) => {
                       name="phone"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel>Phone Number</FormLabel>
+                          <FormLabel>{t("consultationForm.phone")}</FormLabel>
                           <FormControl>
-                            <Input
-                              placeholder="(555) 555-5555"
-                              {...field}
-                              name="phone"
-                            />
+                            <Input placeholder="(555) 555-5555" {...field} name="phone" />
                           </FormControl>
                           <FormMessage />
                         </FormItem>
@@ -299,9 +283,9 @@ const ConsultationForm = ({ isOpen, onClose }: ConsultationFormProps) => {
                     name="topic"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>What would you like to discuss?</FormLabel>
+                        <FormLabel>{t("consultationForm.topicLabel")}</FormLabel>
                         <FormControl>
-                          <Textarea
+                          <Textarea 
                             placeholder="Briefly describe your legal matter..."
                             className="min-h-[100px]"
                             {...field}
@@ -316,14 +300,14 @@ const ConsultationForm = ({ isOpen, onClose }: ConsultationFormProps) => {
                   {/* Footer Buttons */}
                   <DialogFooter className="flex flex-col-reverse sm:flex-row sm:justify-between gap-2">
                     <Button type="button" variant="outline" onClick={handleBack}>
-                      Back to Calendar
+                      {t("consultationForm.backToCalendar")}
                     </Button>
                     <Button
                       type="submit"
                       className="bg-law-gold hover:bg-law-gold/90 text-law-navy"
                       disabled={isSubmitting}
                     >
-                      {isSubmitting ? "Scheduling..." : "Schedule Consultation"}
+                      {isSubmitting ? t("consultationForm.scheduling") : t("consultationForm.scheduleBtn")}
                     </Button>
                   </DialogFooter>
                 </form>
