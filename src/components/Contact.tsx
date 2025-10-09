@@ -19,10 +19,10 @@ const Contact = () => {
 
     try {
       const result = await emailjs.sendForm(
-        "service_dfbvqiv", // Replace with your EmailJS service ID
-        "template_qu0l9xe", // Replace with your EmailJS template ID
+        import.meta.env.VITE_EMAIL_SERVICE_ID, 
+        import.meta.env.VITE_EMAIL_TEMPLATE_ID, 
         formRef.current!,
-        "C0A-A-ZNVhGSZRFDN" // Replace with your EmailJS public key
+        import.meta.env.VITE_EMAIL_PUBLIC_KEY 
       );
 
       if (result.status === 200) {
@@ -82,9 +82,9 @@ const Contact = () => {
               </div>
               <div>
                 <label htmlFor="subject" className="block mb-2 font-medium text-law-charcoal">
-                  {t("subject")}
+                  Subject
                 </label>
-                <Input id="subject" name="subject" placeholder={t("subjectPlaceholder")} className="w-full" required />
+                <Input id="subject" name="subject" placeholder="How can I help you?" className="w-full" required />
               </div>
               <div>
                 <label htmlFor="message" className="block mb-2 font-medium text-law-charcoal">
